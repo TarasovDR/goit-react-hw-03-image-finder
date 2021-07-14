@@ -2,11 +2,10 @@ import React, { Component } from 'react';
 import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
 
 import Api from 'services/Api';
-// import Button from 'components/Button';
-import Container from 'components/Container';
+import Button from 'components/Button';
 import ImageGallery from 'components/ImageGallery';
 import Loader from 'components/Loader';
-import Modal from 'components/Modal/Modal';
+import Modal from 'components/Modal';
 import Searchbar from 'components/Searchbar';
 
 class App extends Component {
@@ -14,26 +13,15 @@ class App extends Component {
     error: null,
     images: [],
     isLoading: false,
-    largeImage: '',
+    selectedImage: '',
     page: 1,
     searchQuery: '',
-    showModal: true,
+    showModal: false,
   };
 
   componentDidUpdate(prevProps, prevState) {
     if (prevState.searchQuery !== this.state.searchQuery) {
-      const { searchQuery, page } = this.state;
-      this.toggleLoader();
-
-      Api.fetchImages({ searchQuery, page })
-        .then(hits => {
-          this.setState(prevState => ({
-            images: [...prevState.images, ...hits],
-            page: prevState.page + 1,
-          }));
-        })
-        .catch(error => this.setState({ error: true }))
-        .finally(() => this.setState(this.toggleLoader()));
+      this.fetchImages();
     }
 
     if (this.state.page !== 2 && prevState.page !== this.state.page) {
@@ -44,8 +32,23 @@ class App extends Component {
     }
   }
 
-  getLargeImageURL = largeImageURL => {
-    this.setState({ largeImage: largeImageURL });
+  fetchImages = () => {
+    const { searchQuery, page } = this.state;
+    this.toggleLoader();
+
+    Api.fetchImages({ searchQuery, page })
+      .then(hits => {
+        this.setState(prevState => ({
+          images: [...prevState.images, ...hits],
+          page: prevState.page + 1,
+        }));
+      })
+      .catch(error => this.setState({ error: true }))
+      .finally(() => this.setState(this.toggleLoader()));
+  };
+
+  loadLargeImageURL = largeImageURL => {
+    this.setState({ selectedImage: largeImageURL });
     this.toggleModal();
   };
 
@@ -57,6 +60,10 @@ class App extends Component {
     });
   };
 
+  nextPage = () => {
+    this.setState(prevState => ({ page: prevState.page + 1 }));
+  };
+
   toggleLoader = () => {
     this.setState(prevState => ({ isLoading: !prevState.isLoading }));
   };
@@ -66,25 +73,19 @@ class App extends Component {
       showModal: !showModal,
     }));
   };
-  handleCloseModal = () => this.setState({ selectedImage: null });
+
   render() {
-    const { images, isLoading, largeImage, showModal } = this.state;
+    const { images, isLoading, selectedImage, showModal } = this.state;
     return (
-      <Container>
+      <>
         <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
-        <ImageGallery images={images} onSelect={this.toggleModal} />
-        {/* {images.length > 0 && <Button />} */}
-        {/* {showModal && (
-          <Modal
-            onClick={this.toggleModal}
-            largeImageURL={this.state.largeImage}
-          ></Modal>
-        )} */}
+        <ImageGallery images={images} onSelect={this.loadLargeImageURL} />
+        {images.length > 0 && <Button onClick={this.fetchImages} />}
         {showModal && (
-          <Modal onClose={this.toggleModal} largeImageURL={largeImage} />
+          <Modal onClose={this.toggleModal} largeImageURL={selectedImage} />
         )}
-      </Container>
+      </>
     );
   }
 }

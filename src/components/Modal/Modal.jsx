@@ -5,8 +5,8 @@ import { Overlay, ModalContainer } from './Modal.styled';
 
 const modalRoot = document.querySelector('#modal-root');
 
-export default class Modal extends Component {
-  componentDidMount(){
+class Modal extends Component {
+  componentDidMount() {
     window.addEventListener('keydown', this.handleKeydown);
   }
 
@@ -15,9 +15,9 @@ export default class Modal extends Component {
   }
 
   handleKeydown = e => {
-      if (e.code === 'Escape') {
-        this.props.onClose();
-      }
+    if (e.code === 'Escape') {
+      this.props.onClose();
+    }
   };
 
   handleBackdropClick = e => {
@@ -30,14 +30,15 @@ export default class Modal extends Component {
     return createPortal(
       <Overlay onClick={this.handleBackdropClick}>
         <ModalContainer>
-          <img src={this.props.largeImageURL} alt="" />
+        <img src={this.props.largeImageURL} alt="" />
         </ModalContainer>
       </Overlay>, modalRoot
     )
   }
 }
-
 Modal.propTypes = {
   onClose: PropTypes.func.isRequired,
   largeImageURL: PropTypes.string.isRequired,
-}
+};
+
+export default Modal;
