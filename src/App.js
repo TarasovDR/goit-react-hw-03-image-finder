@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
-import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+// import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import Api from 'services/Api';
 import Button from 'components/Button';
@@ -77,10 +79,11 @@ class App extends Component {
         <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
         <ImageGallery images={images} onSelect={this.loadLargeImageURL} />
-        {images.length > 0 && <Button onClick={this.fetchImages} />}
+        {images.length > 11 && <Button onClick={this.fetchImages} />}
         {showModal && (
           <Modal onClose={this.toggleModal} largeImageURL={selectedImage} />
         )}
+        {<ToastContainer position="top-right" autoClose={3000} />}
       </>
     );
   }

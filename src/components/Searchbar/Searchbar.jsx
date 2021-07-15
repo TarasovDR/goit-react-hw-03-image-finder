@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 import { SearchHeader, SearchForm, SearchFormButton, SearchFormButtonLabel, SearchFormInput } from './Searchbar.styled';
 
@@ -10,6 +12,14 @@ export default class Searchbar extends Component {
 
   handleSubmit = e => {
     e.preventDefault();
+
+    if (this.state.searchQuery.trim() === ""){
+      toast.warn('no request - no picture=)', {
+        position: "top-right",
+        autoClose: 3000,
+        });
+      return;
+    }
     this.props.onSubmit(this.state.searchQuery);
     this.reset();
   }
