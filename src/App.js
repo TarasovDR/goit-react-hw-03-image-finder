@@ -60,10 +60,6 @@ class App extends Component {
     });
   };
 
-  nextPage = () => {
-    this.setState(prevState => ({ page: prevState.page + 1 }));
-  };
-
   toggleLoader = () => {
     this.setState(prevState => ({ isLoading: !prevState.isLoading }));
   };
