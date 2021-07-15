@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 // import 'react-loader-spinner/dist/loader/css/react-spinner-loader.css';
-import { ToastContainer } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 import Api from 'services/Api';
@@ -73,9 +73,14 @@ class App extends Component {
   };
 
   render() {
-    const { images, isLoading, selectedImage, showModal } = this.state;
+    const { error, images, isLoading, selectedImage, showModal } = this.state;
     return (
       <>
+        {error &&
+          toast.error('there are no such pictures!', {
+            position: 'top-right',
+            autoClose: 3000,
+          })}
         <Searchbar onSubmit={this.handleSubmit} />
         {isLoading && <Loader />}
         <ImageGallery images={images} onSelect={this.loadLargeImageURL} />
